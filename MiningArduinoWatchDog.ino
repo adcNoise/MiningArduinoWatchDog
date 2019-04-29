@@ -17,7 +17,6 @@ unsigned long timingC;
 #define sbit(reg,bit)  reg |= (1<<bit)
 
 void setup() {
-  // initialize serial:
   Serial.begin(19200);
 
   PCICR   |= _BV(PCIE0);
@@ -39,7 +38,8 @@ void loop() {
       
   while (Serial.available() > 0) {
     if (Serial.read() == '\n') {
-      
+      Worker0.WorkerReset = STATE_OK;
+      chbit(PORTB,5);
     }
   }
 }
