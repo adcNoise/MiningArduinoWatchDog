@@ -1,41 +1,45 @@
 #include "Miner.h"
+#include <avr/io.h>
+#include <avr/interrupt.h>
 
-#define WORKER0 A0
-#define WORKER1 A1
-#define WORKER2 A2
-#define WORKER3 A3
-#define WORKER4 A4
-#define WORKER5 A5
-#define WORKER6 A6
+#define WORKER0 12
 
-#define WORKER0_OUT 2
-#define WORKER1_OUT 3
-#define WORKER2_OUT 4
-#define WORKER3_OUT 5
-#define WORKER4_OUT 6
-#define WORKER5_OUT 7
-#define WORKER6_OUT 8
+#define WORKER0_OUT_RESET_SW  2
+#define WORKER0_OUT_PWR_SW    3
 
-Miner Worker0(WORKER0,WORKER0_OUT);
-Miner Worker1(WORKER1,WORKER1_OUT);
-Miner Worker2(WORKER2,WORKER2_OUT);
-Miner Worker3(WORKER3,WORKER3_OUT);
-Miner Worker4(WORKER4,WORKER4_OUT);
-Miner Worker5(WORKER5,WORKER5_OUT);
-Miner Worker6(WORKER6,WORKER6_OUT);
+Miner Worker0(WORKER0,WORKER0_OUT_RESET_SW,WORKER0_OUT_PWR_SW);
 
 const int redPin = 3;
 const int greenPin = 5;
 const int bluePin = 6;
 
+unsigned long timingA;
+unsigned long timingB;
+unsigned long timingC;
+
+#define chbit(reg,bit)  reg ^= (1<<bit)
+#define sbit(reg,bit)  reg |= (1<<bit)
+
 void setup() {
   // initialize serial:
   Serial.begin(19200);
+
+  PCICR   |= _BV(PCIE0);
+  PCMSK0  |= _BV(PCINT0);
+
+  sbit(DDRB,5);
 }
 
 void loop() {
+  if (millis() - timingA > 10){ // 0.01s пауза 
+      timingA = millis();
+      Worker0.StatusUpdate();
+  }
 
-
+    if (millis() - timingB > 500){ // 0.01s пауза 
+      timingB = millis();
+      Worker0.Reset();
+  }
       
   while (Serial.available() > 0) {
     int red = Serial.parseInt();
@@ -56,4 +60,14 @@ void loop() {
       Serial.println(blue, HEX);
     }
   }
+}
+
+ISR(PCINT0_vect)
+{
+  if (PINB & _BV(PB0)){
+      Worker0.timer = TIMER_VALUE;  // сброс
+      Worker0.WorkerReset = STATE_OK;
+      
+      chbit(PORTB,5);
+    }
 }
