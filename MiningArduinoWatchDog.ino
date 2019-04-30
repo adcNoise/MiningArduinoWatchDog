@@ -46,11 +46,11 @@ void loop() {
     //  Worker0.WorkerReset = STATE_OK;
     //  chbit(PORTB,5);}
     char incByte = Serial.read();
-    if (incByte == 'A'){
+    if (incByte == 'A'){   // сбросить счётчик
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
       chbit(PORTB,5);}
-    if (incByte == 'r'){
+    if (incByte == 'r'){ // отправить r чтобы перезагрузить компьютер
         Serial.println("Reseting!");
         digitalWrite( Worker0.portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(      Worker0.portOut_reset, OUTPUT);    // as OUTPUT
@@ -64,7 +64,7 @@ void loop() {
              Serial.println("s");
         }
     }
-    if (incByte == 'p'){
+    if (incByte == 'p'){ // отправить p чтобы включить/выключить компьютер
         digitalWrite(   Worker0.portOut_pwr, LOW );       // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(        Worker0.portOut_pwr, OUTPUT);    // as OUTPUT
         Serial.println("Power OFF");
@@ -78,7 +78,7 @@ void loop() {
              Serial.println("s");
         }
     }
-    if (incByte == ' '){
+    if (incByte == ' '){  // сбросить счётчик
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
       chbit(PORTB,5);}   
