@@ -8,14 +8,17 @@ void Miner::Reset(){
         Serial.println("Reseting!");
         digitalWrite( portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(      portOut_reset, OUTPUT);    // as OUTPUT
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_DELAY_1:
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_RESET_2:
          pinMode(      portOut_reset, INPUT);
-         WorkerReset++;
+         if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_DELAY_2:
         Serial.println("Delaying...");
@@ -25,20 +28,24 @@ void Miner::Reset(){
              Serial.print(counter);
              Serial.println("s");
           }
-         WorkerReset++;
+         if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_RESET_3:
         Serial.println("Reseting!");
         digitalWrite( portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(      portOut_reset, OUTPUT);    // as OUTPUT
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_DELAY_3:
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_RESET_4:
          pinMode(      portOut_reset, INPUT);
-         WorkerReset++;
+         if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_DELAY_4:
         Serial.println("Delaying...");
@@ -48,7 +55,8 @@ void Miner::Reset(){
              Serial.print(counter);
              Serial.println("s");
           }
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
 
       case STATE_PWR_OFF_1:
@@ -69,13 +77,16 @@ void Miner::Reset(){
              Serial.print(counter);
              Serial.println("s");
           }
-        WorkerReset++;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset++;
       break;
       case STATE_REPEAT:
-        WorkerReset = STATE_RESET_1;
+        if(WorkerReset!=STATE_OK)
+          WorkerReset = STATE_RESET_1;
       break;
       case STATE_OK:
         pinMode(      portOut_reset, INPUT);
+        pinMode(      portOut_pwr, INPUT);
       break;
       default:
        WorkerReset++;
