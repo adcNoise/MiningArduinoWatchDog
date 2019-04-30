@@ -31,17 +31,28 @@ void loop() {
       Worker0.StatusUpdate();
   }
 
+  if (millis() - timingC > 1000){ // 0.01s пауза 
+      timingC = millis();
+      Serial.println(Worker0.timer);
+      
+  }
+
     if (millis() - timingB > 500){ // 0.01s пауза 
       timingB = millis();
       Worker0.Reset();
   }
-      
+       
   while (Serial.available() > 0) {
-    if (Serial.read() == '\n') {
+    if (Serial.read() == 0xD){
+      Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
-      chbit(PORTB,5);
-    }
-  }
+      chbit(PORTB,5);}
+    if (Serial.read() == 0x20) {
+      Worker0.timer = TIMER_VALUE;
+      Worker0.WorkerReset = STATE_OK;
+      chbit(PORTB,5);}
+    Serial.flush();      
+     }
 }
 
 ISR(PCINT0_vect)

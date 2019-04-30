@@ -1,10 +1,11 @@
 #include "Miner.h"
 #include <avr/io.h>
 
-
-void Miner::Reset(){
+void Miner::Reset(){    
+    uint32_t counter;
     switch(WorkerReset){
       case STATE_RESET_1:
+        Serial.println("Reseting!");
         digitalWrite( portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(      portOut_reset, OUTPUT);    // as OUTPUT
         WorkerReset++;
@@ -17,11 +18,17 @@ void Miner::Reset(){
          WorkerReset++;
       break;
       case STATE_DELAY_2:
-        delay(100000);
-        delay(100000);
+        Serial.println("Delaying...");
+        counter = DELAYING_TIME_SEC;
+        while(counter--&&((timer!=1)||(timer!=0))){
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+          }
          WorkerReset++;
       break;
       case STATE_RESET_3:
+        Serial.println("Reseting!");
         digitalWrite( portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(      portOut_reset, OUTPUT);    // as OUTPUT
         WorkerReset++;
@@ -34,18 +41,34 @@ void Miner::Reset(){
          WorkerReset++;
       break;
       case STATE_DELAY_4:
-        delay(100000);
-        delay(100000);
+        Serial.println("Delaying...");
+        counter = DELAYING_TIME_SEC;
+        while(counter--&&((timer!=1)||(timer!=0))){
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+          }
         WorkerReset++;
       break;
 
       case STATE_PWR_OFF_1:
         digitalWrite(   portOut_pwr, LOW );       // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
         pinMode(        portOut_pwr, OUTPUT);    // as OUTPUT
-        delay(5000);    // 5 сек
+        Serial.println("Power OFF");
+        counter = 5;
+        while(counter--){ // условие не добавлять, т.к. после нужно включить кнопку обратно
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+          }
         pinMode(      portOut_pwr, INPUT);
-        delay(100000);
-        delay(100000);  // 10 сек
+        Serial.println("Power ON");
+        counter = DELAYING_TIME_SEC_PW;
+        while(counter--&&((timer!=1)||(timer!=0))){
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+          }
         WorkerReset++;
       break;
       case STATE_REPEAT:
@@ -61,7 +84,6 @@ void Miner::Reset(){
   }
 
 void Miner::StatusUpdate(){
-
     if(timer!=0)
       timer--;
     

@@ -4,6 +4,11 @@
 #include <Arduino.h>
 
 #define TIMER_VALUE 0x00004650
+//#define TIMER_VALUE 0x0000150// for debug!!!!!!!!!!!!!!!!!!!!
+
+#define DELAYING_TIME_SEC     100
+#define DELAYING_TIME_SEC_PW  200
+
 
 enum{
   STATE_OK,
