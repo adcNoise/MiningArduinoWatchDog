@@ -43,15 +43,19 @@ void loop() {
   }
        
   while (Serial.available() > 0) {
-    if (Serial.read() == 0xD){
+    //if (Serial.read() == 0xD){
+    //  Worker0.timer = TIMER_VALUE;
+    //  Worker0.WorkerReset = STATE_OK;
+    //  chbit(PORTB,5);}
+    if (Serial.read() == 0x20){
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
       chbit(PORTB,5);}
-    if (Serial.read() == 0x20) {
+    if (Serial.read() == '1'){
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
       chbit(PORTB,5);}
-    Serial.flush();      
+    //Serial.flush();      
      }
 }
 
