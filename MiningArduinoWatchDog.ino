@@ -30,32 +30,58 @@ void loop() {
       timingA = millis();
       Worker0.StatusUpdate();
   }
-
   if (millis() - timingC > 1000){ // 0.01s пауза 
       timingC = millis();
       Serial.println(Worker0.timer);
       
   }
-
     if (millis() - timingB > 500){ // 0.01s пауза 
       timingB = millis();
       Worker0.Reset();
   }
        
-  while (Serial.available() > 0) {
+  while (Serial.available()) {
     //if (Serial.read() == 0xD){
     //  Worker0.timer = TIMER_VALUE;
     //  Worker0.WorkerReset = STATE_OK;
     //  chbit(PORTB,5);}
-    if (Serial.read() == 0x20){
+    char incByte = Serial.read();
+    if (incByte == 'A'){
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
       chbit(PORTB,5);}
-    if (Serial.read() == '1'){
+    if (incByte == 'r'){
+        Serial.println("Reseting!");
+        digitalWrite( Worker0.portOut_reset, LOW );     // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
+        pinMode(      Worker0.portOut_reset, OUTPUT);    // as OUTPUT
+        delay(300);
+        pinMode(      Worker0.portOut_reset, INPUT);
+        Serial.println("Delaying...");
+        uint32_t counter = DELAYING_TIME_SEC;
+        while(counter--){
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+        }
+    }
+    if (incByte == 'p'){
+        digitalWrite(   Worker0.portOut_pwr, LOW );       // pull-down   // НЕ МЕНЯТЬ, ИНАЧЕ МОЖЕТ СГОРЕТЬ КАРТА!!!
+        pinMode(        Worker0.portOut_pwr, OUTPUT);    // as OUTPUT
+        Serial.println("Power OFF");
+        delay(5000);
+        pinMode(      Worker0.portOut_pwr, INPUT);
+        Serial.println("Delaying...");
+        uint32_t counter = DELAYING_TIME_SEC;
+        while(counter--){
+             delay(1000);
+             Serial.print(counter);
+             Serial.println("s");
+        }
+    }
+    if (incByte == ' '){
       Worker0.timer = TIMER_VALUE;
       Worker0.WorkerReset = STATE_OK;
-      chbit(PORTB,5);}
-    //Serial.flush();      
+      chbit(PORTB,5);}   
      }
 }
 
